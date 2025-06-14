@@ -53,5 +53,9 @@ def make_teleoperator_from_config(config: TeleoperatorConfig) -> Teleoperator:
         from .keyboard.teleop_keyboard import KeyboardEndEffectorTeleop
 
         return KeyboardEndEffectorTeleop(config)
+    elif config.type == "spes_teleop":
+        from .spes_teleop.spes_teleop import SpesTeleop
+
+        return SpesTeleop(config)
     else:
         raise ValueError(config.type)
