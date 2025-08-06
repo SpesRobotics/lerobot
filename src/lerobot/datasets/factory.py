@@ -100,9 +100,7 @@ def make_dataset(cfg: TrainPipelineConfig) -> LeRobotDataset | MultiLeRobotDatas
         # Handle local dataset without repo_id
         # Create a dummy repo_id for local dataset
         local_repo_id = "local_dataset"
-        ds_meta = LeRobotDatasetMetadata(
-            local_repo_id, root=cfg.dataset.root, revision=cfg.dataset.revision
-        )
+        ds_meta = LeRobotDatasetMetadata(local_repo_id, root=cfg.dataset.root, revision=cfg.dataset.revision)
         delta_timestamps = resolve_delta_timestamps(cfg.policy, ds_meta)
         dataset = LeRobotDataset(
             local_repo_id,

@@ -619,9 +619,11 @@ class TimeLimitWrapper(gym.Wrapper):
 
         # Keep max_episode_steps as a fallback, but prioritize actual time
         self.max_episode_steps = int(self.control_time_s * self.fps)
-        
+
         # Debug logging
-        logging.info(f"TimeLimitWrapper initialized: control_time_s={control_time_s}s, fps={fps}, max_episode_steps={self.max_episode_steps}")
+        logging.info(
+            f"TimeLimitWrapper initialized: control_time_s={control_time_s}s, fps={fps}, max_episode_steps={self.max_episode_steps}"
+        )
 
         self.current_step = 0
 
@@ -636,30 +638,38 @@ class TimeLimitWrapper(gym.Wrapper):
             Tuple of (observation, reward, terminated, truncated, info).
         """
         obs, reward, terminated, truncated, info = self.env.step(action)
-        
+
         # Calculate elapsed time since episode start
         current_time = time.perf_counter()
         self.episode_time_in_s = current_time - self.episode_start_time
         self.current_step += 1
-        
+
         # Check if we've exceeded the time limit
         if self.episode_time_in_s >= self.control_time_s:
             truncated = True
-            logging.info(f"Episode terminated due to time limit: {self.episode_time_in_s:.2f}s >= {self.control_time_s}s")
-        
+            logging.info(
+                f"Episode terminated due to time limit: {self.episode_time_in_s:.2f}s >= {self.control_time_s}s"
+            )
+
         # Fallback: also check step limit as safety
         elif self.current_step >= self.max_episode_steps:
             truncated = True
-            logging.info(f"Episode terminated due to step limit: {self.current_step} >= {self.max_episode_steps}")
-            
+            logging.info(
+                f"Episode terminated due to step limit: {self.current_step} >= {self.max_episode_steps}"
+            )
+
         # Debug logging every 10 steps (more frequent for debugging)
         if self.current_step % 10 == 0:
-            logging.info(f"Episode step {self.current_step}: {self.episode_time_in_s:.2f}s elapsed, {self.control_time_s - self.episode_time_in_s:.2f}s remaining, max_steps={self.max_episode_steps}")
-            
+            logging.info(
+                f"Episode step {self.current_step}: {self.episode_time_in_s:.2f}s elapsed, {self.control_time_s - self.episode_time_in_s:.2f}s remaining, max_steps={self.max_episode_steps}"
+            )
+
         # Log when episode is about to end
         if self.episode_time_in_s >= self.control_time_s * 0.9:  # Log when 90% of time is used
-            logging.info(f"Episode approaching time limit: {self.episode_time_in_s:.2f}s / {self.control_time_s}s ({self.episode_time_in_s/self.control_time_s*100:.1f}%)")
-            
+            logging.info(
+                f"Episode approaching time limit: {self.episode_time_in_s:.2f}s / {self.control_time_s}s ({self.episode_time_in_s / self.control_time_s * 100:.1f}%)"
+            )
+
         return obs, reward, terminated, truncated, info
 
     def reset(self, seed=None, options=None):
@@ -1872,7 +1882,7 @@ def make_robot_env(cfg: EnvConfig) -> gym.Env:
         import gym_hil  # noqa: F401
 
         # Debug logging
-        random_block_pos = getattr(cfg, 'random_block_position', False)
+        random_block_pos = getattr(cfg, "random_block_position", False)
         logging.info(f"Creating HIL environment with random_block_position={random_block_pos}")
         logging.info(f"Episode time limit: {cfg.wrapper.control_time_s if cfg.wrapper else 'None'} seconds")
 
@@ -1888,12 +1898,12 @@ def make_robot_env(cfg: EnvConfig) -> gym.Env:
         )
         env = GymHilObservationProcessorWrapper(env=env)
         env = GymHilDeviceWrapper(env=env, device=cfg.device)
-        
+
         # Add TimeLimitWrapper for HIL environments to control episode length
-        if cfg.wrapper and hasattr(cfg.wrapper, 'control_time_s'):
+        if cfg.wrapper and hasattr(cfg.wrapper, "control_time_s"):
             env = TimeLimitWrapper(env=env, control_time_s=cfg.wrapper.control_time_s, fps=cfg.fps)
             logging.info(f"Added TimeLimitWrapper with {cfg.wrapper.control_time_s}s limit")
-        
+
         env = BatchCompatibleWrapper(env=env)
         env = TorchActionWrapper(env=env, device=cfg.device)
         return env
@@ -2172,12 +2182,16 @@ def record_dataset(env, policy, cfg):
             if (terminated or truncated) and not success_detected:
                 # Regular termination without success
                 elapsed_time = time.perf_counter() - start_episode_t
-                logging.info(f"Episode {episode_index} ended after {elapsed_time:.2f}s (limit: {episode_time_limit}s)")
+                logging.info(
+                    f"Episode {episode_index} ended after {elapsed_time:.2f}s (limit: {episode_time_limit}s)"
+                )
                 break
             elif success_detected and success_steps_collected >= cfg.number_of_steps_after_success:
                 # We've collected enough success states
                 elapsed_time = time.perf_counter() - start_episode_t
-                logging.info(f"Episode {episode_index} completed with success after {elapsed_time:.2f}s - collected {success_steps_collected} additional success states")
+                logging.info(
+                    f"Episode {episode_index} completed with success after {elapsed_time:.2f}s - collected {success_steps_collected} additional success states"
+                )
                 break
 
         # Handle episode recording

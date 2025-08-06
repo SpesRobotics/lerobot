@@ -329,10 +329,12 @@ def add_actor_information_and_train(
     logging.info(f"Action space shape: {cfg.policy.output_features['action'].shape}")
     logging.info(f"num_discrete_actions: {cfg.policy.num_discrete_actions}")
     logging.info(f"Action normalization: {cfg.policy.normalization_mapping.get('ACTION', 'Not set')}")
-    if 'action' in cfg.policy.dataset_stats:
+    if "action" in cfg.policy.dataset_stats:
         logging.info(f"Action stats - min: {cfg.policy.dataset_stats['action']['min']}")
         logging.info(f"Action stats - max: {cfg.policy.dataset_stats['action']['max']}")
-    logging.info(f"Environment use_gripper: {cfg.env.wrapper.use_gripper if cfg.env.wrapper else 'No wrapper'}")
+    logging.info(
+        f"Environment use_gripper: {cfg.env.wrapper.use_gripper if cfg.env.wrapper else 'No wrapper'}"
+    )
     logging.info(f"Environment random_block_position: {getattr(cfg.env, 'random_block_position', 'Not set')}")
     logging.info("=" * 80)
 
@@ -625,9 +627,15 @@ def add_actor_information_and_train(
 
         # Debug logging for checkpoint saving
         if optimization_step % 100 == 0:  # Log every 100 steps to avoid spam
-            logging.info(f"[LEARNER] Checkpoint debug - optimization_step: {optimization_step}, save_freq: {save_freq}, saving_checkpoint: {saving_checkpoint}")
-            logging.info(f"[LEARNER] Checkpoint condition: optimization_step % save_freq == 0: {optimization_step % save_freq == 0}")
-            logging.info(f"[LEARNER] Checkpoint condition: optimization_step == online_steps: {optimization_step == online_steps}")
+            logging.info(
+                f"[LEARNER] Checkpoint debug - optimization_step: {optimization_step}, save_freq: {save_freq}, saving_checkpoint: {saving_checkpoint}"
+            )
+            logging.info(
+                f"[LEARNER] Checkpoint condition: optimization_step % save_freq == 0: {optimization_step % save_freq == 0}"
+            )
+            logging.info(
+                f"[LEARNER] Checkpoint condition: optimization_step == online_steps: {optimization_step == online_steps}"
+            )
 
         # Save checkpoint at specified intervals
         if saving_checkpoint and (optimization_step % save_freq == 0 or optimization_step == online_steps):
@@ -811,7 +819,9 @@ def save_training_checkpoint(
         except Exception as e:
             logging.error(f"Failed to upload policy to Hugging Face: {e}")
     else:
-        logging.info(f"Policy upload to Hugging Face disabled - push_to_hub: {cfg.policy.push_to_hub}, repo_id: {cfg.policy.repo_id}")
+        logging.info(
+            f"Policy upload to Hugging Face disabled - push_to_hub: {cfg.policy.push_to_hub}, repo_id: {cfg.policy.repo_id}"
+        )
 
 
 def make_optimizers_and_scheduler(cfg: TrainRLServerPipelineConfig, policy: nn.Module):
