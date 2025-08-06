@@ -71,7 +71,7 @@ repos:
         name: Format Markdown with Prettier
         types_or: [markdown, mdx]
         args: [--prose-wrap=preserve]
-        exclude: ^(outputs/|examples/hil_serl_simulation_training/outputs/)
+        exclude: ^(outputs/|examples/hil_serl_simulation_training/outputs/).*\.(md|mdx)$
 
   ##### Security #####
   - repo: https://github.com/gitleaks/gitleaks
