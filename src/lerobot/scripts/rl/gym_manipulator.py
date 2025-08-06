@@ -622,7 +622,8 @@ class TimeLimitWrapper(gym.Wrapper):
 
         # Debug logging
         logging.info(
-            f"TimeLimitWrapper initialized: control_time_s={control_time_s}s, fps={fps}, max_episode_steps={self.max_episode_steps}"
+            f"TimeLimitWrapper initialized: control_time_s={control_time_s}s, "
+            f"fps={fps}, max_episode_steps={self.max_episode_steps}"
         )
 
         self.current_step = 0
@@ -661,13 +662,16 @@ class TimeLimitWrapper(gym.Wrapper):
         # Debug logging every 10 steps (more frequent for debugging)
         if self.current_step % 10 == 0:
             logging.info(
-                f"Episode step {self.current_step}: {self.episode_time_in_s:.2f}s elapsed, {self.control_time_s - self.episode_time_in_s:.2f}s remaining, max_steps={self.max_episode_steps}"
+                f"Episode step {self.current_step}: {self.episode_time_in_s:.2f}s elapsed, "
+                f"{self.control_time_s - self.episode_time_in_s:.2f}s remaining, "
+                f"max_steps={self.max_episode_steps}"
             )
 
         # Log when episode is about to end
         if self.episode_time_in_s >= self.control_time_s * 0.9:  # Log when 90% of time is used
             logging.info(
-                f"Episode approaching time limit: {self.episode_time_in_s:.2f}s / {self.control_time_s}s ({self.episode_time_in_s / self.control_time_s * 100:.1f}%)"
+                f"Episode approaching time limit: {self.episode_time_in_s:.2f}s / "
+                f"{self.control_time_s}s ({self.episode_time_in_s / self.control_time_s * 100:.1f}%)"
             )
 
         return obs, reward, terminated, truncated, info
@@ -2190,7 +2194,8 @@ def record_dataset(env, policy, cfg):
                 # We've collected enough success states
                 elapsed_time = time.perf_counter() - start_episode_t
                 logging.info(
-                    f"Episode {episode_index} completed with success after {elapsed_time:.2f}s - collected {success_steps_collected} additional success states"
+                    f"Episode {episode_index} completed with success after {elapsed_time:.2f}s - "
+                    f"collected {success_steps_collected} additional success states"
                 )
                 break
 
