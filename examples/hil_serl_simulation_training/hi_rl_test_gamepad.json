@@ -41,7 +41,7 @@
     "use_gamepad": true,
     "name": "franka_sim",
     "mode": "record",
-    "repo_id": "spirosperos/panda-pick-gamepad",
+    "repo_id": "username/panda-pick-gamepad",
     "dataset_root": "./recordings_static_gamepad",
     "task": "PandaPickCubeGamepad-v0",
     "num_episodes": 30,

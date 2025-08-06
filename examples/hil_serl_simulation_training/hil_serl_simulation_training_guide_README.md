@@ -19,12 +19,13 @@ python -m lerobot.scripts.rl.gym_manipulator --config_path examples/hil_serl_sim
 ```
 
 **Important Notes:**
+
 - **Recommended**: Collect 30-40 episodes including some failed picking attempts
 - **Control**: Use a gamepad controller for better end-effector control (configuration already set up)
-- **Dataset Storage**: 
+- **Dataset Storage**:
   - `dataset_root` points to local folder where dataset is saved
   - `repo_id` points to HuggingFace account for dataset upload
-  - **Prerequisite**: Install and authorize HuggingFace CLI with token to push datasets
+  - **Prerequisite**: Install and authorize HuggingFace CLI with token to push datasets and replace the username in the `hi_rl_test_gamepad.json` and `train_gym_hil_env_gamepad.json`
 
 ## Training the Policy
 
@@ -51,6 +52,7 @@ The learner initializes with parameters from the offline training dataset.
 3. **Completely pick the object** if needed
 
 **Progression Strategy:**
+
 - As training progresses, interventions should become less aggressive
 - Once the policy manages to pick the cube on its own, start intervening only to guide the end effector to the approximate area where the object is found
 
@@ -93,4 +95,4 @@ The trained intervention rate should approximately look like this after a while:
 
 - **Save Frequency**: Controlled by `save_freq` in training config
 - **Checkpoint Location**: `outputs/train/YYYY-MM-DD/HH-MM-SS_jobname/checkpoints/`
-- **Policy Path**: Points to `pretrained_model/` directory within checkpoints 
+- **Policy Path**: Points to `pretrained_model/` directory within checkpoints

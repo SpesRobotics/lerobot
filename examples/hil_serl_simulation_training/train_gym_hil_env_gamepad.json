@@ -1,4 +1,4 @@
-{    
+{
     "output_dir": null,
     "job_name": "default",
     "resume": false,
@@ -15,14 +15,14 @@
         "disable_artifact": true
     },
     "dataset": {
-        "repo_id": "spirosperos/panda-pick-gamepad",
+        "repo_id": "hf_username/panda-pick-gamepad",
         "use_imagenet_stats": false,
         "video_backend": "pyav"
     },
     "policy": {
         "type": "sac",
         "n_obs_steps": 1,
-        "repo_id": "spirosperos/panda-pick-gamepad-policy",
+        "repo_id": "hf_username/panda-pick-gamepad-policy",
 
         "normalization_mapping": {
             "VISUAL": "MEAN_STD",
@@ -206,92 +206,92 @@
         }
     },
     "env": {
-    "type": "hil",
-    "wrapper": {
-        "gripper_penalty": -0.02,
-        "display_cameras": false,
-        "add_joint_velocity_to_observation": true,
-        "add_ee_pose_to_observation": true,
-        "crop_params_dict": {
-            "observation.images.front": [
-                0,
-                0,
+        "type": "hil",
+        "wrapper": {
+            "gripper_penalty": -0.02,
+            "display_cameras": false,
+            "add_joint_velocity_to_observation": true,
+            "add_ee_pose_to_observation": true,
+            "crop_params_dict": {
+                "observation.images.front": [
+                    0,
+                    0,
+                    128,
+                    128
+                ],
+                "observation.images.wrist": [
+                    0,
+                    0,
+                    128,
+                    128
+                ]
+            },
+            "resize_size": [
                 128,
                 128
             ],
-            "observation.images.wrist": [
-                0,
-                0,
-                128,
-                128
-            ]
+            "control_time_s": 30.0,
+            "fixed_reset_joint_positions": [
+                0.0,
+                0.195,
+                0.0,
+                -2.43,
+                0.0,
+                2.62,
+                0.785
+            ],
+            "reset_time_s": 2.0,
+            "control_mode": "gamepad"
         },
-        "resize_size": [
-            128,
-            128
-        ],
-        "control_time_s": 30.0,
-        "fixed_reset_joint_positions": [
-            0.0,
-            0.195,
-            0.0,
-            -2.43,
-            0.0,
-            2.62,
-            0.785
-        ],
-        "reset_time_s": 2.0,
-        "control_mode": "gamepad"
-    },
-    "name": "franka_sim",
-    "mode": null,
-    "repo_id": "spirosperos/panda-pick-gamepad",
-    "dataset_root": null,
-    "task": "PandaPickCubeGamepad-v0",
-    "num_episodes": 30,
-    "episode": 0,
-    "pretrained_policy_name_or_path": null,
-    "device": "cuda",
-    "push_to_hub": true,
-    "fps": 10,
-    "random_block_position": true,
-    "number_of_steps_after_success": 0,
-    "features": {
-        "observation.images.front": {
-            "type": "VISUAL",
-            "shape": [
-                3,
-                128,
-                128
-            ]
+        "name": "franka_sim",
+        "mode": null,
+        "repo_id": "hf_username/panda-pick-gamepad",
+        "dataset_root": null,
+        "task": "PandaPickCubeGamepad-v0",
+        "num_episodes": 30,
+        "episode": 0,
+        "pretrained_policy_name_or_path": null,
+        "device": "cuda",
+        "push_to_hub": true,
+        "fps": 10,
+        "random_block_position": true,
+        "number_of_steps_after_success": 0,
+        "features": {
+            "observation.images.front": {
+                "type": "VISUAL",
+                "shape": [
+                    3,
+                    128,
+                    128
+                ]
+            },
+            "observation.images.wrist": {
+                "type": "VISUAL",
+                "shape": [
+                    3,
+                    128,
+                    128
+                ]
+            },
+            "observation.state": {
+                "type": "STATE",
+                "shape": [
+                    18
+                ]
+            },
+            "action": {
+                "type": "ACTION",
+                "shape": [
+                    3
+                ]
+            }
         },
-        "observation.images.wrist": {
-            "type": "VISUAL",
-            "shape": [
-                3,
-                128,
-                128
-            ]
+        "features_map": {
+            "observation.images.front": "observation.images.front",
+            "observation.images.wrist": "observation.images.wrist",
+            "observation.state": "observation.state",
+            "action": "action"
         },
-        "observation.state": {
-            "type": "STATE",
-            "shape": [
-                18
-            ]
-        },
-        "action": {
-            "type": "ACTION",
-            "shape": [
-                3
-            ]
-        }
-    },
-    "features_map": {
-        "observation.images.front": "observation.images.front",
-        "observation.images.wrist": "observation.images.wrist",
-        "observation.state": "observation.state",
-        "action": "action"
-    },
-    "reward_classifier_pretrained_path": null
-}
+        "reward_classifier_pretrained_path": null
+    }
 }
