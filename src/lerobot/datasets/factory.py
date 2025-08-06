@@ -96,6 +96,23 @@ def make_dataset(cfg: TrainPipelineConfig) -> LeRobotDataset | MultiLeRobotDatas
             revision=cfg.dataset.revision,
             video_backend=cfg.dataset.video_backend,
         )
+    elif cfg.dataset.repo_id is None and cfg.dataset.root is not None:
+        # Handle local dataset without repo_id
+        # Create a dummy repo_id for local dataset
+        local_repo_id = "local_dataset"
+        ds_meta = LeRobotDatasetMetadata(
+            local_repo_id, root=cfg.dataset.root, revision=cfg.dataset.revision
+        )
+        delta_timestamps = resolve_delta_timestamps(cfg.policy, ds_meta)
+        dataset = LeRobotDataset(
+            local_repo_id,
+            root=cfg.dataset.root,
+            episodes=cfg.dataset.episodes,
+            delta_timestamps=delta_timestamps,
+            image_transforms=image_transforms,
+            revision=cfg.dataset.revision,
+            video_backend=cfg.dataset.video_backend,
+        )
     else:
         raise NotImplementedError("The MultiLeRobotDataset isn't supported for now.")
         dataset = MultiLeRobotDataset(
