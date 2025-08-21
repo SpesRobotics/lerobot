@@ -65,6 +65,14 @@ class ACTPolicy(PreTrainedPolicy):
         self.config = config
 
         self.normalize_inputs = Normalize(config.input_features, config.normalization_mapping, dataset_stats)
+        # self.normalize_targets = Normalize(
+        #     {}, config.normalization_mapping, dataset_stats
+        # )
+        # self.unnormalize_outputs = Unnormalize(
+        #     {}, config.normalization_mapping, dataset_stats
+        # )
+        # self.prev_actions = None
+
         self.normalize_targets = Normalize(
             config.output_features, config.normalization_mapping, dataset_stats
         )
@@ -137,6 +145,9 @@ class ACTPolicy(PreTrainedPolicy):
         """Predict a chunk of actions given environment observations."""
         self.eval()
 
+        # if self.prev_actions is None:
+        #     self.prev_actions = batch["observation.state"][:, :6]
+
         batch = self.normalize_inputs(batch)
         if self.config.image_features:
             batch = dict(batch)  # shallow copy so that adding a key doesn't modify the original
@@ -144,6 +155,10 @@ class ACTPolicy(PreTrainedPolicy):
 
         actions = self.model(batch)[0]
         actions = self.unnormalize_outputs({ACTION: actions})[ACTION]
+
+        # actions[:, :, :6] += self.prev_actions
+        # self.prev_actions = actions[:, -1, :6]  # save the last action for the next call
+
         return actions
 
     def forward(self, batch: dict[str, Tensor]) -> tuple[Tensor, dict]:

@@ -205,6 +205,13 @@ def train(cfg: TrainPipelineConfig):
         batch = next(dl_iter)
         train_tracker.dataloading_s = time.perf_counter() - start_time
 
+        # joint_n = 6
+        # chunk_size = cfg.policy.chunk_size
+        # init_action_batch = batch['action'][:, 0, :joint_n].clone()
+        # for i in range(chunk_size):
+        #     curr_action_batch = batch['action'][:, i, :joint_n]
+        #     batch['action'][:, i, :joint_n] = curr_action_batch - init_action_batch
+
         for key in batch:
             if isinstance(batch[key], torch.Tensor):
                 batch[key] = batch[key].to(device, non_blocking=device.type == "cuda")
