@@ -54,28 +54,6 @@ from lerobot.processor import (
 from lerobot.configs.types import PipelineFeatureType, PolicyFeature
 
 
-@ProcessorStepRegistry.register("delta_actions_processor")
-@dataclass
-class DeltaActionsProcessorStep(ProcessorStep):
-    def __call__(self, transition: EnvTransition) -> EnvTransition:
-        self._current_transition = transition.copy()
-        new_transition = self._current_transition
-
-        action = new_transition.get(TransitionKey.ACTION)
-        observation = new_transition.get(TransitionKey.OBSERVATION)
-
-        if action is not None and observation is not None:
-            obs_state = new_transition[TransitionKey.OBSERVATION]["observation.state"]
-            new_transition[TransitionKey.ACTION][:, :, :6] -= obs_state.unsqueeze(1)[:, :, :6]
-
-        return new_transition
-
-    def transform_features(
-        self, features: dict[PipelineFeatureType, dict[str, PolicyFeature]]
-    ) -> dict[PipelineFeatureType, dict[str, PolicyFeature]]:
-        return features
-
-
 @ProcessorStepRegistry.register(name="pi05_prepare_state_tokenizer_processor_step")
 @dataclass
 class Pi05PrepareStateTokenizerProcessorStep(ProcessorStep):
@@ -162,7 +140,6 @@ def make_pi05_pre_post_processors(
 
     # Add remaining processors
     input_steps: list[ProcessorStep] = [
-        DeltaActionsProcessorStep(),
         RenameObservationsProcessorStep(rename_map={}),  # To mimic the same processor as pretrained one
         AddBatchDimensionProcessorStep(),
         # NOTE: NormalizerProcessorStep MUST come before Pi05PrepareStateTokenizerProcessorStep

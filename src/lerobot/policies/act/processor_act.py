@@ -30,37 +30,6 @@ from lerobot.processor import (
 from lerobot.processor.converters import policy_action_to_transition, transition_to_policy_action
 from lerobot.utils.constants import POLICY_POSTPROCESSOR_DEFAULT_NAME, POLICY_PREPROCESSOR_DEFAULT_NAME
 
-from dataclasses import dataclass
-from lerobot.processor import (
-    EnvTransition,
-    ProcessorStep,
-    ProcessorStepRegistry,
-    TransitionKey,
-)
-from lerobot.configs.types import PipelineFeatureType, PolicyFeature
-
-
-@ProcessorStepRegistry.register("delta_actions_processor")
-@dataclass
-class DeltaActionsProcessorStep(ProcessorStep):
-    def __call__(self, transition: EnvTransition) -> EnvTransition:
-        self._current_transition = transition.copy()
-        new_transition = self._current_transition
-
-        action = new_transition.get(TransitionKey.ACTION)
-        observation = new_transition.get(TransitionKey.OBSERVATION)
-
-        if action is not None and observation is not None:
-            obs_state = new_transition[TransitionKey.OBSERVATION]["observation.state"]
-            new_transition[TransitionKey.ACTION][:, :, :6] -= obs_state.unsqueeze(1)[:, :, :6]
-
-        return new_transition
-
-    def transform_features(
-        self, features: dict[PipelineFeatureType, dict[str, PolicyFeature]]
-    ) -> dict[PipelineFeatureType, dict[str, PolicyFeature]]:
-        return features
-
 
 def make_act_pre_post_processors(
     config: ACTConfig,
@@ -85,7 +54,6 @@ def make_act_pre_post_processors(
     """
 
     input_steps = [
-        DeltaActionsProcessorStep(),
         RenameObservationsProcessorStep(rename_map={}),
         AddBatchDimensionProcessorStep(),
         DeviceProcessorStep(device=config.device),
