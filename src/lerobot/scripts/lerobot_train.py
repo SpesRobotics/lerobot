@@ -273,8 +273,12 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
     )
 
     # Prepend delta processor to the preprocessor pipeline
-    delta = DeltaActionsProcessorStep()
-    preprocessor.steps.insert(0, delta)
+    if cfg.policy.pretrained_path is None:
+        delta = DeltaActionsProcessorStep()
+        preprocessor.steps.insert(0, delta)
+        print("Inserted DeltaActionsProcessorStep into preprocessor pipeline.")
+    else:
+        print("Loaded preprocessor from pretrained policy; not inserting DeltaActionsProcessorStep.")
 
     if is_main_process:
         logging.info("Creating optimizer and scheduler")
