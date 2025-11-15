@@ -273,7 +273,13 @@ def train(cfg: TrainPipelineConfig, accelerator: Accelerator | None = None):
     )
 
     # Prepend delta processor to the preprocessor pipeline
-    if cfg.policy.pretrained_path is None:
+    should_add_delta_processor = True
+    for step in preprocessor.steps:
+        if isinstance(step, DeltaActionsProcessorStep):
+            should_add_delta_processor = False
+            break
+
+    if should_add_delta_processor:
         delta = DeltaActionsProcessorStep()
         preprocessor.steps.insert(0, delta)
         print("Inserted DeltaActionsProcessorStep into preprocessor pipeline.")
